@@ -20,6 +20,8 @@ public class CameraMovement : MonoBehaviour {
     private DepthOfField depthOfField = null;
     public GameObject hinge;
 
+    private Quaternion tempRot;
+
 
 
 
@@ -126,8 +128,10 @@ public class CameraMovement : MonoBehaviour {
         }
 
         // this.transform.position = Vector3.Lerp(this.transform.position, cameraPosition, 2f * Time.deltaTime);
-        this.transform.position =  new Vector3(Mathf.Lerp(this.transform.position.x,
-                cameraPosition.x, 2f * Time.deltaTime), Mathf.Lerp(this.transform.position.y, cameraPosition.y, 2f * Time.deltaTime), Mathf.Lerp(this.transform.position.z, cameraPosition.z, 2f * Time.deltaTime));
+        hinge.transform.position = Vector3.Lerp(hinge.transform.position, player.transform.position, 2f * Time.deltaTime);
+
+        // this.transform.position =  new Vector3(Mathf.Lerp(this.transform.position.x,
+        //         cameraPosition.x, 2f * Time.deltaTime), Mathf.Lerp(this.transform.position.y, cameraPosition.y, 2f * Time.deltaTime), Mathf.Lerp(this.transform.position.z, cameraPosition.z, 2f * Time.deltaTime));
 
     }
 }
