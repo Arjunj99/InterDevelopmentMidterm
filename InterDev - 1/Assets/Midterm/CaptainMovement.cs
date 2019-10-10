@@ -15,7 +15,7 @@ public class CaptainMovement : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (cameraMovement.landMode) {
+        if (cameraMovement.canDisembark) {
             // this.transform.Translate(new Vector3(0,0,moveSpeed*Time.deltaTime));
             if(Input.GetKey(KeyCode.W) && moveSpeed < 10f) {
                 this.transform.Translate(new Vector3(-moveSpeed*Time.deltaTime,0,0));

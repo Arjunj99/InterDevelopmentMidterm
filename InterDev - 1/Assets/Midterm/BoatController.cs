@@ -15,7 +15,7 @@ public class BoatController : MonoBehaviour {
     // private bool won = false;
     public GameObject camera;
     public CameraMovement cameraMovement;
-    public bool canQ;
+    public bool inPort;
     public Boat boat;
 
     public List<GameObject> IslandList = new List<GameObject>();
