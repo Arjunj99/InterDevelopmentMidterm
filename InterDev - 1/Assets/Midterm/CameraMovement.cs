@@ -19,8 +19,13 @@ public class CameraMovement : MonoBehaviour {
     private Vignette vignette = null;
     private DepthOfField depthOfField = null;
     public GameObject hinge;
+    public bool cinematicMode = false;
 
     private Quaternion tempRot;
+
+    public float focalL;
+    public float focalD;
+    public float apertur;
 
 
 
@@ -30,8 +35,9 @@ public class CameraMovement : MonoBehaviour {
 
 
 
-    private Vector3 cameraPosition;
+    public Vector3 cameraPosition;
     private Quaternion cameraRotation;
+    public Vector3 cameraRotationEuler;
     public GameObject player;
 
     public Camera cam;
@@ -39,6 +45,8 @@ public class CameraMovement : MonoBehaviour {
     private int zoomOutFOV = 60;
     public bool isScouting = false;
     public GameObject demon;
+
+    private Quaternion baseRotation;
 
     public int rotationSpeed = -20;
     public BoatController boatController;
@@ -61,81 +69,96 @@ public class CameraMovement : MonoBehaviour {
         depthOfField.focusDistance.value = 10f;
         depthOfField.aperture.value = 17.2f;
         depthOfField.focalLength.value = 159f;
+
+        baseRotation = this.transform.rotation;
     }
 
     void Update() {
-        // if (Input.GetKeyDown(KeyCode.Q)) {
+        if (!cinematicMode) {
+            if (!canDisembark) {
+                this.cameraPosition = player.transform.position + (player.transform.up * 6) + (player.transform.forward * -20);
+                if (!isScouting) {
+                    this.cameraRotation = player.transform.rotation;
+                    hinge.transform.rotation = Quaternion.Slerp(hinge.transform.rotation, cameraRotation, 0.8f * Time.deltaTime);
+                }
+
+                if (Input.GetKey(KeyCode.LeftShift)) {
+                    cam.fieldOfView = Mathf.Lerp(this.cam.fieldOfView, zoomInFOV, 2f * Time.deltaTime);
+                    vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, 0.76f, 0.7f * Time.deltaTime);
+                    depthOfField.focalLength.value = Mathf.Lerp(depthOfField.focalLength.value, 1f, 0.3f * Time.deltaTime);
+                    isScouting = true;
+                } else {
+                    cam.fieldOfView = Mathf.Lerp(this.cam.fieldOfView, zoomOutFOV, 2f * Time.deltaTime);
+                    vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, 0f, 0.7f * Time.deltaTime);
+                    depthOfField.focalLength.value = Mathf.Lerp(depthOfField.focalLength.value, 159f, 1.8f * Time.deltaTime);
+                    depthOfField.focusDistance.value = Mathf.Lerp(depthOfField.focusDistance.value, 10f, 1.8f * Time.deltaTime);
+                    depthOfField.aperture.value = Mathf.Lerp(depthOfField.aperture.value, 17.2f, 1.8f * Time.deltaTime);
+                    isScouting = false;
+                }
+
+                if(isScouting && Input.GetKey(KeyCode.A)) {
+                    this.transform.Rotate(new Vector3(0, rotationSpeed*Time.deltaTime, 0));
+                }
+                if(isScouting && Input.GetKey(KeyCode.D)) {
+                    this.transform.Rotate(new Vector3(0, -rotationSpeed*Time.deltaTime, 0));
+                }
+                if(isScouting && Input.GetKey(KeyCode.W)) {
+                    this.transform.Rotate(new Vector3(rotationSpeed*Time.deltaTime, 0, 0));
+                }
+                if(isScouting && Input.GetKey(KeyCode.S)) {
+                    this.transform.Rotate(new Vector3(-rotationSpeed*Time.deltaTime, 0, 0));
+                }
+                // if(Input.GetKeyUp(KeyCode.LeftShift)) {
+                //     while ()
+                //     this.transform.rotation = Quaternion.Slerp(this.transform.rotation, baseRotation, 0.8f * Time.deltaTime); 
+                // }
+                    
+            }
+            hinge.transform.position = Vector3.Lerp(hinge.transform.position, player.transform.position, 2f * Time.deltaTime);
+        } else {
+            // this.transform.position = Vector3.Lerp(this.transform.position, cameraPosition, 2f * Time.deltaTime);
+            // this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.Euler(cameraRotationEuler), 2f * Time.deltaTime);
+            depthOfField.focalLength.value = Mathf.Lerp(depthOfField.focalLength.value, 147f, 3f * Time.deltaTime);
+            depthOfField.focusDistance.value = Mathf.Lerp(depthOfField.focusDistance.value, 80f, 3f * Time.deltaTime);
+            depthOfField.aperture.value = Mathf.Lerp(depthOfField.aperture.value, 1.5f, 3f * Time.deltaTime);
+            hinge.transform.position = Vector3.Lerp(hinge.transform.position, cameraPosition, 0.6f * Time.deltaTime);
+            hinge.transform.rotation = Quaternion.Slerp(hinge.transform.rotation, Quaternion.Euler(cameraRotationEuler), 0.6f * Time.deltaTime);
+            Debug.Log("YES");
+        } 
+
+    }
+}
+            
+
+                    // if (Input.GetKeyDown(KeyCode.Q)) {
         //     if (canDisembark) { canDisembark = false; } else { canDisembark = true; }
         // }
 
 
         //Debugging Tools
-        if (canDisembark) {
-            if (Input.GetKey(KeyCode.Alpha1)) {
-                cameraPosition = positions[0];
-                cameraRotation = Quaternion.Euler(rotations[0]);
-            } else if (Input.GetKey(KeyCode.Alpha2)) {
-                cameraPosition = positions[1];
-                cameraRotation = Quaternion.Euler(rotations[1]);
-            } else if (Input.GetKey(KeyCode.Alpha3)) {
-                cameraPosition = positions[2];
-                cameraRotation = Quaternion.Euler(rotations[2]);
-            } else if (Input.GetKey(KeyCode.Alpha4)) {
-                cameraPosition = positions[3];
-                cameraRotation = Quaternion.Euler(rotations[3]);
-            } else if (Input.GetKey(KeyCode.Alpha5)) {
-                cameraPosition = positions[4];
-                cameraRotation = Quaternion.Euler(rotations[4]);
-            } else {
-                this.cameraPosition = demon.transform.position + demon.transform.forward * 1.5f + demon.transform.right * 3;
-                this.cameraRotation = Quaternion.Euler(demon.transform.rotation.x, demon.transform.rotation.y, demon.transform.rotation.z);
-            }
-            hinge.transform.rotation = Quaternion.Slerp(this.transform.rotation, cameraRotation, 0.8f * Time.deltaTime);
-        }
+        // if (canDisembark) {
+        //     if (Input.GetKey(KeyCode.Alpha1)) {
+        //         cameraPosition = positions[0];
+        //         cameraRotation = Quaternion.Euler(rotations[0]);
+        //     } else if (Input.GetKey(KeyCode.Alpha2)) {
+        //         cameraPosition = positions[1];
+        //         cameraRotation = Quaternion.Euler(rotations[1]);
+        //     } else if (Input.GetKey(KeyCode.Alpha3)) {
+        //         cameraPosition = positions[2];
+        //         cameraRotation = Quaternion.Euler(rotations[2]);
+        //     } else if (Input.GetKey(KeyCode.Alpha4)) {
+        //         cameraPosition = positions[3];
+        //         cameraRotation = Quaternion.Euler(rotations[3]);
+        //     } else if (Input.GetKey(KeyCode.Alpha5)) {
+        //         cameraPosition = positions[4];
+        //         cameraRotation = Quaternion.Euler(rotations[4]);
+        //     } else {
+        //         this.cameraPosition = demon.transform.position + demon.transform.forward * 1.5f + demon.transform.right * 3;
+        //         this.cameraRotation = Quaternion.Euler(demon.transform.rotation.x, demon.transform.rotation.y, demon.transform.rotation.z);
+        //     }
+        //     hinge.transform.rotation = Quaternion.Slerp(this.transform.rotation, cameraRotation, 0.8f * Time.deltaTime);
+        // }
         // IF STATEMENT TILL HERE CAN BE DELETED
-
-        if (!canDisembark) {
-            this.cameraPosition = player.transform.position + (player.transform.up * 6) + (player.transform.forward * -20);
-            if (!isScouting) {
-                this.cameraRotation = player.transform.rotation;
-                hinge.transform.rotation = Quaternion.Slerp(hinge.transform.rotation, cameraRotation, 0.8f * Time.deltaTime);
-            }
-
-            if (Input.GetKey(KeyCode.LeftShift)) {
-                cam.fieldOfView = Mathf.Lerp(this.cam.fieldOfView, zoomInFOV, 2f * Time.deltaTime);
-                vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, 0.76f, 0.7f * Time.deltaTime);
-                depthOfField.focalLength.value = Mathf.Lerp(depthOfField.focalLength.value, 1f, 0.3f * Time.deltaTime);
-                isScouting = true;
-            } else {
-                cam.fieldOfView = Mathf.Lerp(this.cam.fieldOfView, zoomOutFOV, 2f * Time.deltaTime);
-                vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, 0f, 0.7f * Time.deltaTime);
-                depthOfField.focalLength.value = Mathf.Lerp(depthOfField.focalLength.value, 159f, 1.8f * Time.deltaTime);
-                isScouting = false;
-            }
-
-            if(isScouting && Input.GetKey(KeyCode.A)) {
-                this.transform.Rotate(new Vector3(0, rotationSpeed*Time.deltaTime, 0));
-            }
-            if(isScouting && Input.GetKey(KeyCode.D)) {
-                this.transform.Rotate(new Vector3(0, -rotationSpeed*Time.deltaTime, 0));
-            }
-            if(isScouting && Input.GetKey(KeyCode.W)) {
-                this.transform.Rotate(new Vector3(rotationSpeed*Time.deltaTime, 0, 0));
-            }
-            if(isScouting && Input.GetKey(KeyCode.S)) {
-                this.transform.Rotate(new Vector3(-rotationSpeed*Time.deltaTime, 0, 0));
-            }
-        }
-
-        // this.transform.position = Vector3.Lerp(this.transform.position, cameraPosition, 2f * Time.deltaTime);
-        hinge.transform.position = Vector3.Lerp(hinge.transform.position, player.transform.position, 2f * Time.deltaTime);
-
-        // this.transform.position =  new Vector3(Mathf.Lerp(this.transform.position.x,
-        //         cameraPosition.x, 2f * Time.deltaTime), Mathf.Lerp(this.transform.position.y, cameraPosition.y, 2f * Time.deltaTime), Mathf.Lerp(this.transform.position.z, cameraPosition.z, 2f * Time.deltaTime));
-
-    }
-}
-            
             
 
             // this.transform.rotation = Quaternion.Slerp(this.transform.rotation, cameraRotation, 0.8f * Time.deltaTime);

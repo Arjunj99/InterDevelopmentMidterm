@@ -12,10 +12,17 @@ public class BoatAI : MonoBehaviour {
     private float timer = 0f;
     private float timerLimit = 2f;
 
+    private bool dir;
+
     private Queue<Vector3> bombs = new Queue<Vector3>();
 
     void Awake() {
         boat = new Boat();
+        int dirint = Random.Range(0,1);
+        if (dirint == 0)
+            dir = false;
+        else
+            dir = true;
     }
 
 
@@ -44,7 +51,10 @@ public class BoatAI : MonoBehaviour {
         }
 
         if (Physics.SphereCast(navRay, 4f, maxDist)) {
-            this.transform.Rotate(new Vector3(0, boat.GetCurrentRotation() * Time.deltaTime, 0));
+            if (dir)
+                this.transform.Rotate(new Vector3(0, boat.GetCurrentRotation() * Time.deltaTime, 0));
+            else
+                this.transform.Rotate(new Vector3(0, boat.GetCurrentRotation() * -Time.deltaTime, 0));
         } else {
             if (boat.GetCurrentSpeed() < maxSpeed)
                 boat.SetCurrentSpeed(boat.GetCurrentSpeed() + 0.2f);
