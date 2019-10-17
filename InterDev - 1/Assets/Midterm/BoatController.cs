@@ -111,10 +111,15 @@ public class BoatController : MonoBehaviour {
             timer += Time.deltaTime;
         }
     }
+
     // IEnumerator wait() {
     //     yield return new WaitForSeconds(3);
     // }
-
+    void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.tag == "Bomb") {
+            Destroy(gameObject);
+        }
+    }
 }
 
 

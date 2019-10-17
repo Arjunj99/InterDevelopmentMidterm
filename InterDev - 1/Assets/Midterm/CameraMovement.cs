@@ -64,9 +64,9 @@ public class CameraMovement : MonoBehaviour {
     }
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.Q) && boatController.inPort) {
-            if (canDisembark) { canDisembark = false; } else { canDisembark = true; }
-        }
+        // if (Input.GetKeyDown(KeyCode.Q)) {
+        //     if (canDisembark) { canDisembark = false; } else { canDisembark = true; }
+        // }
 
 
         //Debugging Tools
@@ -90,7 +90,7 @@ public class CameraMovement : MonoBehaviour {
                 this.cameraPosition = demon.transform.position + demon.transform.forward * 1.5f + demon.transform.right * 3;
                 this.cameraRotation = Quaternion.Euler(demon.transform.rotation.x, demon.transform.rotation.y, demon.transform.rotation.z);
             }
-            this.transform.rotation = Quaternion.Slerp(this.transform.rotation, cameraRotation, 0.8f * Time.deltaTime);
+            hinge.transform.rotation = Quaternion.Slerp(this.transform.rotation, cameraRotation, 0.8f * Time.deltaTime);
         }
         // IF STATEMENT TILL HERE CAN BE DELETED
 

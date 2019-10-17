@@ -29,24 +29,19 @@ public class BoatAI : MonoBehaviour {
     void Update() {
         Ray navRay = new Ray(this.transform.position, this.transform.forward);
         Debug.DrawRay(this.transform.position, this.transform.forward, Color.cyan, 10f);
+        // Gizmos.DrawWireSphere(this.transform.position, 4f);
 
         this.transform.Translate(new Vector3(0, 0, boat.GetCurrentSpeed() * Time.deltaTime));
         boat.SetCurrentRotation(boat.GetCurrentSpeed() * -2f);
 
         if (timer < timerLimit) {
             timer += Time.deltaTime;
-            // Debug.Log(timer);
         } else {
             Debug.Log("BOMBS SENT");
             bombs.Enqueue(new Vector3(this.transform.position.x + Random.Range(-bombSpread, bombSpread), this.transform.position.y, 
                 this.transform.position.z + Random.Range(-bombSpread, bombSpread)));
             timer = 0f;
         }
-
-
-        // if (boat.GetCurrentSpeed() > 0f) {
-        //     boat.SetCurrentSpeed(boat.GetCurrentSpeed() - 0.1f);
-        // }
 
         if (Physics.SphereCast(navRay, 4f, maxDist)) {
             this.transform.Rotate(new Vector3(0, boat.GetCurrentRotation() * Time.deltaTime, 0));
@@ -56,10 +51,16 @@ public class BoatAI : MonoBehaviour {
         }
 
 
-        if(bombs.Count != 0) {
-            GameObject newBomb = Instantiate(bombObject, this.transform.position, Quaternion.identity);
-            newBomb.GetComponent<cannonArc>().impact = bombs.Dequeue();
-            newBomb.GetComponent<cannonArc>().boatPos = this.transform.position;
-        }
+        // if(bombs.Count != 0) {
+        //     GameObject newBomb = Instantiate(bombObject, this.transform.position + new Vector3(0,30,0), Quaternion.identity);
+        //     newBomb.GetComponent<cannonArc>().impact = bombs.Dequeue();
+        //     newBomb.GetComponent<cannonArc>().boatPos = this.transform.position;
+        // }
     }
+
+    // void OnCollisionEnter(Collision collision) {
+    //     if (collision.gameObject.tag == "Bomb") {
+    //         Destroy(gameObject);
+    //     }
+    // }
 }
