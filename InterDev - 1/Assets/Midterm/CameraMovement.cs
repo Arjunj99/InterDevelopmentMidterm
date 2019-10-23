@@ -94,6 +94,7 @@ public class CameraMovement : MonoBehaviour {
                     depthOfField.focusDistance.value = Mathf.Lerp(depthOfField.focusDistance.value, 10f, 1.8f * Time.deltaTime);
                     depthOfField.aperture.value = Mathf.Lerp(depthOfField.aperture.value, 17.2f, 1.8f * Time.deltaTime);
                     isScouting = false;
+                    this.transform.rotation = Quaternion.Lerp(this.transform.rotation, this.transform.parent.rotation, Time.deltaTime * 0.5f);
                 }
 
                 if(isScouting && Input.GetKey(KeyCode.A)) {

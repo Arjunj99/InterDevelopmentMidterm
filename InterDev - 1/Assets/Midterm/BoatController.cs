@@ -17,6 +17,7 @@ public class BoatController : MonoBehaviour {
     public CameraMovement cameraMovement;
     public bool inPort;
     public Boat boat;
+    public bool isAnchored = false;
 
     public List<GameObject> IslandList = new List<GameObject>();
 
@@ -31,7 +32,7 @@ public class BoatController : MonoBehaviour {
             boat.SetCurrentSpeed(boat.GetCurrentSpeed() - 0.1f);
         }
 
-        if (Input.GetKey(forward) && boat.GetCurrentSpeed() < 10f && !cameraMovement.isScouting) {
+        if (Input.GetKey(forward) && boat.GetCurrentSpeed() < 10f && !cameraMovement.isScouting && !isAnchored) {
             boat.SetCurrentSpeed(boat.GetCurrentSpeed() + 0.2f);
             boat.SetInMotion(true);
         } else {
@@ -40,13 +41,27 @@ public class BoatController : MonoBehaviour {
 
         boat.SetCurrentRotation(boat.GetCurrentSpeed() * -2f);
 
-        if (Input.GetKey(left) && boat.GetCurrentSpeed() > 0f && !cameraMovement.isScouting) {
+        if (Input.GetKey(left) && boat.GetCurrentSpeed() > 0f && !cameraMovement.isScouting && !isAnchored) {
             this.transform.Rotate(new Vector3(0, boat.GetCurrentRotation() * Time.deltaTime, 0));
-            camera.SendMessage("Turn", boat.GetCurrentRotation() * Time.deltaTime);
+            // camera.SendMessage("Turn", boat.GetCurrentRotation() * Time.deltaTime);
+        } else if(Input.GetKey(left) && !cameraMovement.isScouting && isAnchored) {
+            this.transform.Rotate(new Vector3(0, -20f * Time.deltaTime, 0));
         }
-        if (Input.GetKey(right) && boat.GetCurrentSpeed() > 0f && !cameraMovement.isScouting) {
+        if (Input.GetKey(right) && boat.GetCurrentSpeed() > 0f && !cameraMovement.isScouting && !isAnchored) {
             this.transform.Rotate(new Vector3(0, boat.GetCurrentRotation() * -Time.deltaTime, 0));
-            camera.SendMessage("Turn", boat.GetCurrentRotation() * -Time.deltaTime);
+            // camera.SendMessage("Turn", boat.GetCurrentRotation() * -Time.deltaTime);
+        } else if (Input.GetKey(right) && !cameraMovement.isScouting && isAnchored) {
+            this.transform.Rotate(new Vector3(0, -20f * -Time.deltaTime, 0));
+        }
+
+        if (isAnchored) {
+            boat.SetCurrentSpeed(Mathf.Lerp(boat.GetCurrentSpeed(), 0f, 2f * Time.deltaTime));
+        }
+
+        if (Input.GetKey(KeyCode.E) && !isAnchored) {
+            isAnchored = true;
+        } else if (Input.GetKey(KeyCode.E) && isAnchored) {
+            isAnchored = false;
         }
 
         // if (whileSailing) {

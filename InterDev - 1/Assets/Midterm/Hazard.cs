@@ -7,14 +7,18 @@ public class Hazard : MonoBehaviour {
     public Animator whirlpoolAnim;
     public Animator stormAnim;
     public Animator sharkAnim;
+    public Sprite testSprite;
+    public AudioSource audioSource;
+    public AudioClip audioClip;
+
     // Start is called before the first frame update
     void Start() {
-        
+        if (hazard.type == HazardZone.hazardType.whirlpool);
+
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
+
+    // void OnTriggerEnter(coll)
 }

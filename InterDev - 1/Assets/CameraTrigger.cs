@@ -8,6 +8,7 @@ public class CameraTrigger : MonoBehaviour {
     public GameObject mainCamera;
     public GameObject anchorObject;
     public GameObject beacons;
+    public bool isLit;
 
 
     void OnTriggerEnter(Collider other) {
@@ -16,6 +17,7 @@ public class CameraTrigger : MonoBehaviour {
             mainCamera.GetComponent<CameraMovement>().cameraRotationEuler = cameraRotation;
             mainCamera.GetComponent<CameraMovement>().cinematicMode = true;
             beacons.SetActive(true);
+            isLit = true;
         }
     }
 

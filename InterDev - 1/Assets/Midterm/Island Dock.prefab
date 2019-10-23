@@ -106,6 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cinematicMode: 0
+  cameraMovement: {fileID: 0}
 --- !u!136 &4921659602874033889
 CapsuleCollider:
   m_ObjectHideFlags: 0
