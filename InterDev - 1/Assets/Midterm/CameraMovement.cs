@@ -27,6 +27,10 @@ public class CameraMovement : MonoBehaviour {
     public float focalD;
     public float apertur;
 
+    public float focalLength;
+    public float focusDistance;
+    public float aperture;
+
 
 
 
@@ -119,9 +123,9 @@ public class CameraMovement : MonoBehaviour {
         } else {
             // this.transform.position = Vector3.Lerp(this.transform.position, cameraPosition, 2f * Time.deltaTime);
             // this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.Euler(cameraRotationEuler), 2f * Time.deltaTime);
-            depthOfField.focalLength.value = Mathf.Lerp(depthOfField.focalLength.value, 147f, 3f * Time.deltaTime);
-            depthOfField.focusDistance.value = Mathf.Lerp(depthOfField.focusDistance.value, 80f, 3f * Time.deltaTime);
-            depthOfField.aperture.value = Mathf.Lerp(depthOfField.aperture.value, 1.5f, 3f * Time.deltaTime);
+            depthOfField.focalLength.value = Mathf.Lerp(depthOfField.focalLength.value, focalLength, 3f * Time.deltaTime);
+            depthOfField.focusDistance.value = Mathf.Lerp(depthOfField.focusDistance.value, focusDistance, 3f * Time.deltaTime);
+            depthOfField.aperture.value = Mathf.Lerp(depthOfField.aperture.value, aperture, 3f * Time.deltaTime);
             hinge.transform.position = Vector3.Lerp(hinge.transform.position, cameraPosition, 0.6f * Time.deltaTime);
             hinge.transform.rotation = Quaternion.Slerp(hinge.transform.rotation, Quaternion.Euler(cameraRotationEuler), 0.6f * Time.deltaTime);
             Debug.Log("YES");

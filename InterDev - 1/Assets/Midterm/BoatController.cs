@@ -18,11 +18,17 @@ public class BoatController : MonoBehaviour {
     public bool inPort;
     public Boat boat;
     public bool isAnchored = false;
+    public SpringJoint springJoint;
+    public GameObject anchor;
 
     public List<GameObject> IslandList = new List<GameObject>();
 
     void Awake() {
         boat = new Boat("SS Imperial");
+    }
+
+    void Start() {
+        springJoint = gameObject.GetComponentInChildren<SpringJoint>();
     }
 
     void Update() {
@@ -56,11 +62,14 @@ public class BoatController : MonoBehaviour {
 
         if (isAnchored) {
             boat.SetCurrentSpeed(Mathf.Lerp(boat.GetCurrentSpeed(), 0f, 2f * Time.deltaTime));
+            springJoint.anchor = Vector3.Lerp(springJoint.anchor, new Vector3(0,0,0), Time.deltaTime * 2f);
+        } else {
+            springJoint.anchor = Vector3.Lerp(springJoint.anchor, new Vector3(0,-10f,0), Time.deltaTime * 2f);
         }
 
-        if (Input.GetKey(KeyCode.E) && !isAnchored) {
+        if (Input.GetKeyDown(KeyCode.E) && !isAnchored) {
             isAnchored = true;
-        } else if (Input.GetKey(KeyCode.E) && isAnchored) {
+        } else if (Input.GetKeyDown(KeyCode.E) && isAnchored) {
             isAnchored = false;
         }
 
